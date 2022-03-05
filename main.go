@@ -68,13 +68,13 @@ func main() {
 // Setup
 func setupData() {
 	for id, bookName := range books {
-		stockNumber := helper.ConvertStringToInt(helper.GenerateRandomNumber(1000))
-		price := helper.ConvertStringToInt(helper.GenerateRandomNumber(100))
-		pageNumber := helper.GenerateRandomNumber(1000)
+		stockNumber := helper.GenerateRandomInt(1000)
+		price := helper.GenerateRandomFloat(100)
+		pageNumber := helper.GenerateRandomInt(1000)
 		stockCode, _ := helper.GenerateRandomCode(10)
 		isbn, _ := helper.GenerateRandomCode(10)
 
-		newBook := helper.InitBook(id, stockNumber, float64(price), bookName, pageNumber, stockCode, isbn, authors[id])
+		newBook := helper.InitBook(id, stockNumber, pageNumber, price, bookName, stockCode, isbn, authors[id])
 		booksInfo = append(booksInfo, newBook)
 	}
 }

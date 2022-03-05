@@ -20,9 +20,9 @@ type Deletable interface {
 type Book struct {
 	Id          int
 	StockNumber int
+	PageNumber  int
 	Price       float64
 	Name        string
-	PageNumber  string
 	StockCode   string
 	Isbn        string
 	Author
@@ -34,7 +34,7 @@ type Author struct {
 }
 
 // Constructor methods
-func InitBook(id, stockNumber int, price float64, bookName, pageNumber, stockCode, isbn, authorName string) Book {
+func InitBook(id, stockNumber, pageNumber int, price float64, bookName, stockCode, isbn, authorName string) Book {
 	book := Book{
 		Id:          id,
 		StockNumber: stockNumber,
@@ -171,13 +171,7 @@ func PurchaseBook(books []Book, inputList []string) {
 	for _, book := range books {
 		if book.Id == bookId {
 			isBookFound = true
-
-			if book.StockNumber >= numberOfPurchasedBooks {
-				fmt.Printf("\nPurchased successfully\n\n")
-				(&book).DecreaseStockNumber(numberOfPurchasedBooks)
-			} else {
-				fmt.Printf("\nStock number not enough\n\n")
-			}
+			(&book).DecreaseStockNumber(numberOfPurchasedBooks)
 			break
 		}
 	}
@@ -189,7 +183,12 @@ func PurchaseBook(books []Book, inputList []string) {
 
 // Method for decrease stock number
 func (book *Book) DecreaseStockNumber(stockNumber int) {
-	book.StockNumber -= stockNumber
+	if book.StockNumber >= stockNumber {
+		fmt.Printf("\nPurchased successfully\n\n")
+		book.StockNumber -= stockNumber
+		return
+	}
+	fmt.Printf("\nStock number not enough\n\n")
 }
 
 // Method for delete a book
@@ -209,7 +208,7 @@ func DeleteBook(bookList []Book, bookId string) []Book {
 	}
 
 	if i == -1 {
-		fmt.Println("Cannot found any book with the id specified")
+		fmt.Println("Deleted before")
 		return bookList
 	}
 
@@ -250,11 +249,33 @@ func ConvertStringToInt(input string) int {
 	return -1
 }
 
-func GenerateRandomNumber(max int64) string {
+func ConvertStringToFloat64(input string) float64 {
+	if result, err := strconv.ParseFloat(input, 64); err == nil {
+		return result
+	}
+	return -1
+}
+
+func GenerateRandomInt(max int64) int {
 	bigInt, _ := rand.Int(rand.Reader, big.NewInt(max))
 	bigStr := fmt.Sprint(bigInt)
+	result := ConvertStringToInt(bigStr)
+	if result != -1 {
+		return result
+	}
+	fmt.Printf("\nUnexpected error")
+	return 0
+}
 
-	return bigStr
+func GenerateRandomFloat(max int64) float64 {
+	bigInt, _ := rand.Int(rand.Reader, big.NewInt(max))
+	bigStr := fmt.Sprint(bigInt)
+	result := ConvertStringToFloat64(bigStr)
+	if result != -1 {
+		return result
+	}
+	fmt.Printf("\nUnexpected error")
+	return 0
 }
 
 func GenerateRandomCode(length int) (string, error) {
